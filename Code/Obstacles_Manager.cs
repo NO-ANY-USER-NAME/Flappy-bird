@@ -9,9 +9,9 @@ public class Obstacles_Manager:MonoBehaviour{
     public const int MaximumObstacleOnField=5;
     public const float SpawnInterval=1f;
 
-    public const float GapMinY=2f,GapMaxY=5f;
-    public const float GapBaseY=-4.5f,GapHeightLimitY=4.5f;
-    public const float GapMinWidthX=1.5f,GapMaxWidthX=2.5f;
+    public const float GapMinY=1.85f,GapMaxY=5f;
+    public const float GapBaseY=-3.5f,GapHeightLimitY=4.5f;
+    public const float GapMinWidthX=2f,GapMaxWidthX=3f;
     public const float ObstacleMinSpeed=3f,ObstacleMaxSpeed=5.5f;
 
     [Header("Obstacle")]
@@ -35,22 +35,26 @@ public class Obstacles_Manager:MonoBehaviour{
             BoxCollider2D collider;
             SpriteRenderer renderer;
             GameObject GO;
+            
             GO=new GameObject(name);
             GO.SetActive(false);
             GO.layer=6;//hard code value
             GO.tag="obstacle";
+
             renderer=GO.AddComponent<SpriteRenderer>();
             renderer.sprite=sprite;
             renderer.color=Color.red;//change this line if i have sprite for obstacle
             renderer.sortingLayerName="obstacle";
             collider=GO.AddComponent<BoxCollider2D>();
-            GO.transform.parent=folder;
+
             RB=GO.AddComponent<Rigidbody2D>();
             RB.velocity=Vector2.zero;
             RB.rotation=0;
             RB.angularVelocity=0;
             RB.constraints=RigidbodyConstraints2D.FreezeRotation|RigidbodyConstraints2D.FreezePositionY;
             RB.gravityScale=0;
+
+            GO.transform.parent=folder;
             return GO.transform;
         }
 
@@ -96,7 +100,18 @@ public class Obstacles_Manager:MonoBehaviour{
         time=0;
     }
 
-    void Update(){
+    public void RestartGame(){
+        int i;
+        for(i=0;i<MaximumObstacle;i++){
+            obstacles[i].SetUnactive();
+        }
+        obstacleCount=0;
+
+        failCounter=0;
+        time=0;
+    }
+
+    public void ObstacleUpdate(){
         float rightestX=float.MinValue;
         for(int i=0;i<obstacleCount;){
             float x=obstacles[i].GetX();
